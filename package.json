@@ -1,0 +1,31 @@
+{
+  "name": "hackoregon-couch",
+  "version": "0.0.1",
+  "description": "A CouchDB importer for Hack Oregon data.",
+  "preferGlobal": true,
+  "bin": {
+    "hackoregon-couch": "./bin/hackoregon-couch"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/fardog/hackoregon-couch.git"
+  },
+  "author": "Nathan Wittstock <code@fardogllc.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fardog/hackoregon-couch/issues"
+  },
+  "homepage": "https://github.com/fardog/hackoregon-couch",
+  "dependencies": {
+    "felix-couchdb": "^1.0.7",
+    "pg.js": "^2.11.1",
+    "dotenv": "^0.2.7",
+    "debug": "^0.8.0",
+    "async": "^0.6.2",
+    "nomnom": "^1.6.2"
+  }
+}

@@ -1,0 +1,99 @@
+#!/usr/bin/env node
+
+var hackoregoncouch = new (require('../'))();
+var dotenv = require('dotenv');
+var debug = (require('debug'))('hackoregon-couch');
+var util = require('util');
+var opts = require('nomnom')
+  .option('exportCommittees', {
+    abbr: 'c',
+  })
+  .parse();
+var async = require('async');
+
+dotenv.load();
+
+var config = {
+  pg: {
+    url: process.env.PG_URL
+  },
+  couch: {
+    host: process.env.COUCH_HOST,
+    port: process.env.COUCH_PORT
+  }
+}
+
+var exportCommittees = function(ho, callback) {
+  console.log("Updating Committee Lists…");
+  // update committees
+  var query = "select * from raw_committees";
+  ho.pgQuery(query, function(err, cresult) {
+    if(err) {
+      next(err);
+    }
+
+    async.each(cresult.rows, function(row, next) {
+      if (typeof row.committee_id !== 'undefined' && row.committee_id) {
+        var query = "select * from raw_committee_transactions where filer_id=" + row.committee_id + ";";
+
+        ho.pgQuery(query, function(err, tresult) {
+          var doc = row;
+          doc.transactions = tresult.rows;
+          ho.couchSaveDoc(opts.exportCommittees, row.committee_id, doc, function(err) {
+            if (err) {
+              next(err);
+            }
+            else {
+              util.print('.');
+              next();
+            }
+          });
+        });
+      }
+    }, function (err) {
+      if (err) {
+        console.log("Error updating committee lists.");
+        callback(err);
+      }
+      else {
+        console.log("Committee Lists updated successfully.");
+        callback();
+      }
+    });
+  });
+};
+
+
+// push functions into our series of tasks to run
+var toRun = [];
+
+if (opts.exportCommittees) {
+  toRun.push(exportCommittees)
+}
+
+// if we don't have any tasks, print usage and exit
+if (toRun.length === 0) {
+  console.log("hackoregon-couch: Get PostgreSQL data into CouchDB.")
+  console.log("Usage: " + process.argv[1] + " --exportCommittees");
+  process.exit(1);
+}
+
+// initialize our database connections
+hackoregoncouch.initialize(config, function(err, ho) {
+  if (err) {
+    throw err;
+  }
+
+  // run each of our tasks in series
+  async.eachSeries(toRun, function(run, next) {
+    run(ho, next);
+  }, function (err) {
+    if (err) {
+      console.log(err);
+      process.exit(1);
+    }
+    else {
+      console.log("All functions completed successfully.");
+    }
+  });
+});
