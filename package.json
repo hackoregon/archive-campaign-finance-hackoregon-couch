@@ -1,6 +1,6 @@
 {
   "name": "hackoregon-couch",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A CouchDB importer for Hack Oregon data.",
   "preferGlobal": true,
   "bin": {

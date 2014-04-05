@@ -1,4 +1,4 @@
-# HackOregon-Couch v0.0.1
+# HackOregon-Couch v0.0.2
 
 Exports database information from PostgreSQL and imports into a CouchDB.
 

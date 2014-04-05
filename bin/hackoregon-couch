@@ -94,6 +94,7 @@ hackoregoncouch.initialize(config, function(err, ho) {
     }
     else {
       console.log("All functions completed successfully.");
+      process.exit(1);
     }
   });
 });
