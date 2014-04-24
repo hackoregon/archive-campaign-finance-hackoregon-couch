@@ -2,6 +2,10 @@
 
 Exports database information from PostgreSQL and imports into a CouchDB.
 
+## Public CouchDB Instance
+
+There is a read-only CouchDB instance available: https://milkandtang.iriscouch.com/
+
 ## Installation
 
 `hackoregon-couch` runs on [Node.js](http://nodejs.org). Installation assumes you've installed Node.js (0.10.22+) and have `npm` installed.
